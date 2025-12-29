@@ -1,5 +1,5 @@
 package com.creazy.domain.enums;
 
-public enum Platforms {
+public enum Platform {
     INSTAGRAM, TIKTOK;
 }
