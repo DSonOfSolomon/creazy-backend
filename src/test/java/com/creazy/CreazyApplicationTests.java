@@ -1,4 +1,4 @@
-package com.creazy.creazy;
+package com.creazy;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
