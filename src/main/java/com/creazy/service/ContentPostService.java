@@ -4,7 +4,6 @@ package com.creazy.service;
 import com.creazy.domain.entity.ContentPost;
 import com.creazy.domain.enums.Platform;
 import com.creazy.repository.ContentPostRepository;
-import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -38,7 +37,7 @@ public class ContentPostService {
     /**
      * Get all post by ID
      */
-    public Optional<ContentPost> getPOstById(Long id){
+    public Optional<ContentPost> getPostById(Long id){
         return contentPostRepository.findById(id);
     }
 
