@@ -6,6 +6,9 @@ import com.creazy.domain.enums.Platform;
 import com.creazy.domain.enums.TargetEmotion;
 import jakarta.persistence.*;
 
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
+
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -138,5 +141,24 @@ public class ContentPost {
     @Override
     public int hashCode() {
         return Objects.hash(id, title, idea, platform, contentType, targetEmotion, plannedDate, createdAt, updatedAt);
+    }
+
+    /**
+     * Called automatically by JPA before the entity is inserted into the database
+     * Sets createdAt and updatedAt for new records.
+     */
+    @PrePersist
+    protected void onCreate(){
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    /**
+     * Called automatically by JPA before the entity is updated.
+     * Updates the UpdatedAt timestamp.
+     */
+    @PreUpdate
+    protected void onUpdate(){
+        this.updatedAt = LocalDateTime.now();
     }
 }

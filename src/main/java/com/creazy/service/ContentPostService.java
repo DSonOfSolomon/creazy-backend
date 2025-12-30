@@ -29,8 +29,8 @@ public class ContentPostService {
      */
     public ContentPost createPost(ContentPost post){
         //Set timestamps before saving
-        post.setCreatedAt(LocalDateTime.now());
-        post.setUpdatedAt(LocalDateTime.now());
+        //post.setCreatedAt(LocalDateTime.now());
+        //post.setUpdatedAt(LocalDateTime.now());
         return contentPostRepository.save(post);
     }
 
