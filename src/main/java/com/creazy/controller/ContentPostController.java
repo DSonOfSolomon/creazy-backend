@@ -3,6 +3,7 @@ package com.creazy.controller;
 import com.creazy.domain.entity.ContentPost;
 import com.creazy.domain.enums.Platform;
 import com.creazy.service.ContentPostService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +23,7 @@ public class ContentPostController {
     private final ContentPostService contentPostService;
 
     //Constructor injection for the service
+
     public ContentPostController(ContentPostService contentPostService) {
         this.contentPostService = contentPostService;
     }
@@ -33,11 +35,12 @@ public class ContentPostController {
      * @return ...
      */
     @PostMapping
-    public ResponseEntity<ContentPost> createPost(@RequestBody ContentPost post) {
-        ContentPost created = contentPostService.createPost(post);
-        return new ResponseEntity<>(created, HttpStatus.CREATED);
-
+    public ResponseEntity<ContentPost> createPost(
+            @Valid @RequestBody ContentPost post) {
+        ContentPost savedPost = contentPostService.createPost(post);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedPost);
     }
+
 
     /**
      * Get all posts
@@ -55,8 +58,6 @@ public class ContentPostController {
      * Get a post by ID
      * GET /api/posts/{id}
      *
-     * @param id
-     * @return
      */
     @GetMapping("/{id}")
     public ResponseEntity<ContentPost> getPostById(@PathVariable Long id) {
@@ -69,9 +70,6 @@ public class ContentPostController {
      * Update a post
      * PUT /api/posts/{id}
      *
-     * @param id
-     * @param updatedPost
-     * @return
      */
     @PutMapping("/{id}")
     public ResponseEntity<ContentPost> updatedPost(@PathVariable Long id, @RequestBody ContentPost updatedPost) {
