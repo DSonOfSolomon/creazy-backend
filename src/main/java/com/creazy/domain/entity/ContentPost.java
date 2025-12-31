@@ -5,6 +5,7 @@ import com.creazy.domain.enums.ContentType;
 import com.creazy.domain.enums.Platform;
 import com.creazy.domain.enums.TargetEmotion;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import jakarta.persistence.*;
 
 
@@ -21,6 +22,7 @@ import java.util.Objects;
 /**
  * Object class
  */
+@JsonPropertyOrder({"id", "title", "idea", "platform", "contentType", "targetEmotion", "plannedDate", "createdAt", "updatedAt"})
 @Entity
 @Table(name = "content_posts")
 public class ContentPost {
@@ -53,14 +55,17 @@ public class ContentPost {
     private LocalDate plannedDate;
 
     //Audit
+    @Column(updatable = false)
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    
+
 
     //Default constructor
     public ContentPost(){}
 
     public ContentPost(String title, String idea, Platform platform, ContentType contentType,
-                       TargetEmotion targetEmotion, LocalDate plannedDate, LocalDateTime createdAt,
+                       TargetEmotion targetEmotion, @NotNull LocalDate plannedDate, LocalDateTime createdAt,
                        LocalDateTime updatedAt) {
 
 
@@ -124,11 +129,11 @@ public class ContentPost {
         this.targetEmotion = targetEmotion;
     }
 
-    public LocalDateTime getPlannedDate() {
-        return plannedDate.atStartOfDay();
+    public @NotNull(message = "Planned date is required") LocalDate getPlannedDate() {
+        return plannedDate;
     }
 
-    public void setPlannedDate(LocalDate plannedDate) {
+    public void setPlannedDate(@NotNull LocalDate plannedDate) {
         this.plannedDate = plannedDate;
     }
 

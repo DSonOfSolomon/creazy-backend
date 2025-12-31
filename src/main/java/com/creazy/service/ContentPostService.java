@@ -1,41 +1,38 @@
 package com.creazy.service;
 
-
 import com.creazy.domain.entity.ContentPost;
 import com.creazy.domain.enums.Platform;
+import com.creazy.domain.enums.ContentType;
 import com.creazy.repository.ContentPostRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-
 
 /**
  * Service layer for ContentPost entity
  */
 @Service
 public class ContentPostService {
+
     private final ContentPostRepository contentPostRepository;
 
-    //Constructor injection is preferred over field injection
+    // Constructor injection
     public ContentPostService(ContentPostRepository contentPostRepository){
         this.contentPostRepository = contentPostRepository;
     }
 
     /**
      * Save a new ContentPost
-     * @return contentPostRepository
      */
     public ContentPost createPost(ContentPost post){
-        //Set timestamps before saving
-        //post.setCreatedAt(LocalDateTime.now());
-        //post.setUpdatedAt(LocalDateTime.now());
         return contentPostRepository.save(post);
     }
 
     /**
-     * Get all post by ID
+     * Get a post by ID
      */
     public Optional<ContentPost> getPostById(Long id){
         return contentPostRepository.findById(id);
@@ -49,10 +46,9 @@ public class ContentPostService {
     }
 
     /**
-     * update an existing post
+     * Update an existing post
      */
     public ContentPost updatePost(ContentPost post){
-        post.setUpdatedAt(LocalDateTime.now());
         return contentPostRepository.save(post);
     }
 
@@ -64,15 +60,44 @@ public class ContentPostService {
     }
 
     /**
-     * Get all posts for a specific platform
+     * Check if a post exists
+     */
+    public boolean existsById(Long id) {
+        return contentPostRepository.existsById(id);
+    }
+
+    /**
+     * Get posts for a specific platform
      */
     public List<ContentPost> getPostsByPlatform(Platform platform){
         return contentPostRepository.findByPlatform(platform);
     }
+
     /**
-     * Get all posts planned after a certain date
+     * Get posts for a specific content type
      */
-    public List<ContentPost> getPostsPlannedAfter(LocalDateTime dateTime){
-        return contentPostRepository.findByPlannedDateAfter(dateTime);
+    public List<ContentPost> getPostsByContentType(ContentType contentType){
+        return contentPostRepository.findByContentType(contentType);
+    }
+
+    /**
+     * Get posts for a specific planned date
+     */
+    public List<ContentPost> getPostsByPlannedDate(LocalDate plannedDate){
+        return contentPostRepository.findByPlannedDate(plannedDate);
+    }
+
+    /**
+     * Get posts filtered by platform AND content type
+     */
+    public List<ContentPost> getPostsByPlatformAndContentType(Platform platform, ContentType contentType){
+        return contentPostRepository.findByPlatformAndContentType(platform, contentType);
+    }
+
+    /**
+     * Get posts planned after a certain date (if needed)
+     */
+    public List<ContentPost> getPostsPlannedAfter(LocalDate date){
+        return contentPostRepository.findByPlannedDateAfter(date);
     }
 }

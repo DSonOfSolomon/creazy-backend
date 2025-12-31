@@ -1,13 +1,16 @@
 package com.creazy.controller;
 
 import com.creazy.domain.entity.ContentPost;
+import com.creazy.domain.enums.ContentType;
 import com.creazy.domain.enums.Platform;
 import com.creazy.service.ContentPostService;
 import jakarta.validation.Valid;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -72,16 +75,27 @@ public class ContentPostController {
      *
      */
     @PutMapping("/{id}")
-    public ResponseEntity<ContentPost> updatedPost(@PathVariable Long id, @RequestBody ContentPost updatedPost) {
-        //Optional: fetch existing post to check if exists
+    public ResponseEntity<ContentPost> updatedPost(
+            @PathVariable Long id,
+            @Valid @RequestBody ContentPost updatedPost) {
+
         Optional<ContentPost> existingPost = contentPostService.getPostById(id);
         if (existingPost.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        updatedPost.setId(id); //ensure the ID is set
-        ContentPost savedPost = contentPostService.updatePost(updatedPost);
-        return new ResponseEntity<>(savedPost, HttpStatus.OK);
+
+        ContentPost post = existingPost.get();
+        post.setTitle(updatedPost.getTitle());
+        post.setIdea(updatedPost.getIdea());
+        post.setPlatform(updatedPost.getPlatform());
+        post.setContentType(updatedPost.getContentType());
+        post.setTargetEmotion(updatedPost.getTargetEmotion());
+        post.setPlannedDate(updatedPost.getPlannedDate());
+
+        ContentPost savedPost = contentPostService.updatePost(post);
+        return ResponseEntity.ok(savedPost);
     }
+
 
     /**
      * Delete a post by ID
@@ -89,9 +103,14 @@ public class ContentPostController {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePost(@PathVariable Long id) {
+        if (!contentPostService.existsById(id)) {
+            return ResponseEntity.notFound().build();
+        }
+
         contentPostService.deletePost(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return ResponseEntity.noContent().build();
     }
+
 
     /**
      * Get posts by platform
@@ -110,8 +129,26 @@ public class ContentPostController {
     @GetMapping("/planned-after/{dateTime}")
     public ResponseEntity<List<ContentPost>> getPostsPlannedAfter(@PathVariable String dateTime) {
         LocalDateTime dt = LocalDateTime.parse(dateTime); //ISO-8601 format
-        List<ContentPost> posts = contentPostService.getPostsPlannedAfter(dt);
+        List<ContentPost> posts = contentPostService.getPostsPlannedAfter(LocalDate.from(dt));
         return new ResponseEntity<>(posts, HttpStatus.OK);
+    }
+    @GetMapping("/filter")
+    public List<ContentPost> filterPosts(
+            @RequestParam(required = false) Platform platform,
+            @RequestParam(required = false) ContentType contentType,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate plannedDate
+    ) {
+        if (platform != null && contentType != null) {
+            return contentPostService.getPostsByPlatformAndContentType(platform, contentType);
+        } else if (platform != null) {
+            return contentPostService.getPostsByPlatform(platform);
+        } else if (contentType != null) {
+            return contentPostService.getPostsByContentType(contentType);
+        } else if (plannedDate != null) {
+            return contentPostService.getPostsByPlannedDate(plannedDate);
+        } else {
+            return contentPostService.getAllPosts();
+        }
     }
 
 }
