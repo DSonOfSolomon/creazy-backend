@@ -7,55 +7,64 @@ import com.creazy.repository.ContentPostRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 /**
  * Service layer for ContentPost entity
+ * Handles CRUD operations and integrates posting streak updates
  */
 @Service
 public class ContentPostService {
 
     private final ContentPostRepository contentPostRepository;
+    private final PostingStreakService postingStreakService;
 
-    // Constructor injection
-    public ContentPostService(ContentPostRepository contentPostRepository){
+    // Constructor injection for dependencies
+    public ContentPostService(ContentPostRepository contentPostRepository,
+                              PostingStreakService postingStreakService) {
         this.contentPostRepository = contentPostRepository;
+        this.postingStreakService = postingStreakService;
     }
 
     /**
-     * Save a new ContentPost
+     * Create a new ContentPost and update posting streak
      */
-    public ContentPost createPost(ContentPost post){
-        return contentPostRepository.save(post);
+    public ContentPost createPost(ContentPost post) {
+        // Save the post
+        ContentPost savedPost = contentPostRepository.save(post);
+
+        // Update streak automatically using the planned date
+        postingStreakService.updateStreak(post.getPlannedDate());
+
+        return savedPost;
     }
 
     /**
      * Get a post by ID
      */
-    public Optional<ContentPost> getPostById(Long id){
+    public Optional<ContentPost> getPostById(Long id) {
         return contentPostRepository.findById(id);
     }
 
     /**
      * Get all posts
      */
-    public List<ContentPost> getAllPosts(){
+    public List<ContentPost> getAllPosts() {
         return contentPostRepository.findAll();
     }
 
     /**
      * Update an existing post
      */
-    public ContentPost updatePost(ContentPost post){
+    public ContentPost updatePost(ContentPost post) {
         return contentPostRepository.save(post);
     }
 
     /**
      * Delete a post by ID
      */
-    public void deletePost(Long id){
+    public void deletePost(Long id) {
         contentPostRepository.deleteById(id);
     }
 
@@ -69,35 +78,35 @@ public class ContentPostService {
     /**
      * Get posts for a specific platform
      */
-    public List<ContentPost> getPostsByPlatform(Platform platform){
+    public List<ContentPost> getPostsByPlatform(Platform platform) {
         return contentPostRepository.findByPlatform(platform);
     }
 
     /**
      * Get posts for a specific content type
      */
-    public List<ContentPost> getPostsByContentType(ContentType contentType){
+    public List<ContentPost> getPostsByContentType(ContentType contentType) {
         return contentPostRepository.findByContentType(contentType);
     }
 
     /**
      * Get posts for a specific planned date
      */
-    public List<ContentPost> getPostsByPlannedDate(LocalDate plannedDate){
+    public List<ContentPost> getPostsByPlannedDate(LocalDate plannedDate) {
         return contentPostRepository.findByPlannedDate(plannedDate);
     }
 
     /**
      * Get posts filtered by platform AND content type
      */
-    public List<ContentPost> getPostsByPlatformAndContentType(Platform platform, ContentType contentType){
+    public List<ContentPost> getPostsByPlatformAndContentType(Platform platform, ContentType contentType) {
         return contentPostRepository.findByPlatformAndContentType(platform, contentType);
     }
 
     /**
-     * Get posts planned after a certain date (if needed)
+     * Get posts planned after a certain date
      */
-    public List<ContentPost> getPostsPlannedAfter(LocalDate date){
+    public List<ContentPost> getPostsPlannedAfter(LocalDate date) {
         return contentPostRepository.findByPlannedDateAfter(date);
     }
 }
