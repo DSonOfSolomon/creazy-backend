@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 @Entity
 public class PostingStreak {
@@ -14,9 +13,9 @@ public class PostingStreak {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private int CurrentStreak;
-    private int LongestStreak;
-    private LocalDate lastPOstDate;
+    private int currentStreak;
+    private int longestStreak;
+    private LocalDate lastPostDate;
     private int missedDays;
 
     private LocalDateTime updatedAt;
@@ -38,27 +37,27 @@ public class PostingStreak {
     }
 
     public int getCurrentStreak() {
-        return CurrentStreak;
+        return currentStreak;
     }
 
     public void setCurrentStreak(int currentStreak) {
-        CurrentStreak = currentStreak;
+        this.currentStreak = currentStreak;
     }
 
     public int getLongestStreak() {
-        return LongestStreak;
+        return longestStreak;
     }
 
     public void setLongestStreak(int longestStreak) {
-        LongestStreak = longestStreak;
+        this.longestStreak = longestStreak;
     }
 
-    public LocalDate getLastPOstDate() {
-        return lastPOstDate;
+    public LocalDate getLastPostDate() {
+        return lastPostDate;
     }
 
-    public void setLastPOstDate(LocalDate lastPOstDate) {
-        this.lastPOstDate = lastPOstDate;
+    public void setLastPostDate(LocalDate lastPostDate) {
+        this.lastPostDate = lastPostDate;
     }
 
     public int getMissedDays() {
