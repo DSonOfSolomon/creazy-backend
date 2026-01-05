@@ -1,10 +1,12 @@
 package com.creazy.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDateTime;
 
+@JsonPropertyOrder({"id", "postId", "views", "likes", "comments", "postedAt", "createdAt", "updatedAt"})
 @Entity
 public class PerformanceLog {
 
