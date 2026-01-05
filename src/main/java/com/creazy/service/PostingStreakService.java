@@ -16,20 +16,15 @@ public class PostingStreakService {
         this.repository = repository;
     }
 
-    /**
-     * Updates posting streak based on a new post date.
-     */
     public void updateStreak(LocalDate newPostDate) {
+        // Get the streak (assume only one row for now)
         PostingStreak streak = repository.findAll()
                 .stream()
                 .findFirst()
                 .orElseGet(this::initializeStreak);
 
         if (streak.getLastPostDate() != null) {
-            long daysBetween = ChronoUnit.DAYS.between(
-                    streak.getLastPostDate(),
-                    newPostDate
-            );
+            long daysBetween = ChronoUnit.DAYS.between(streak.getLastPostDate(), newPostDate);
 
             if (daysBetween == 1) {
                 streak.setCurrentStreak(streak.getCurrentStreak() + 1);
@@ -56,5 +51,12 @@ public class PostingStreakService {
         streak.setLongestStreak(0);
         streak.setMissedDays(0);
         return repository.save(streak);
+    }
+
+    public PostingStreak getCurrentStreak(){
+        return repository.findAll()
+                .stream()
+                .findFirst()
+                .orElseGet(this::initializeStreak);
     }
 }
