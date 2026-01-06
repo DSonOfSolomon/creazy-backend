@@ -27,4 +27,10 @@ public interface ContentPostRepository extends JpaRepository<ContentPost, Long> 
     // Find posts for an exact planned date
     List<ContentPost> findByPlannedDate(LocalDate plannedDate);
 
+    List<ContentPost> findByPlannedDateBetween(
+            LocalDate startDate,
+            LocalDate endDate
+
+    );
+
 }

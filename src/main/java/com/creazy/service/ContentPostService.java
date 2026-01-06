@@ -6,6 +6,11 @@ import com.creazy.domain.enums.ContentType;
 import com.creazy.repository.ContentPostRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.temporal.TemporalAdjusters;
+
+
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -38,6 +43,16 @@ public class ContentPostService {
         postingStreakService.updateStreak(post.getPlannedDate());
 
         return savedPost;
+    }
+
+    public long getWeeklyPostCount(LocalDate date) {
+
+        LocalDate startOfWeek = date.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
+        LocalDate endOfWeek = date.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY));
+
+        return contentPostRepository
+                .findByPlannedDateBetween(startOfWeek, endOfWeek)
+                .size();
     }
 
     /**

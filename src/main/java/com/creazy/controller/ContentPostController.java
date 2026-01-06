@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 
@@ -150,5 +152,18 @@ public class ContentPostController {
             return contentPostService.getAllPosts();
         }
     }
+    @GetMapping("/weekly-count")
+    public Map<String, Object> getWeeklyPostCount(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date
+    ) {
+        long count = contentPostService.getWeeklyPostCount(date);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("weekOf", date);
+        response.put("postsThisWeek", count);
+
+        return response;
+    }
+
 
 }
